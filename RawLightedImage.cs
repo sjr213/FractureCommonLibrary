@@ -1,7 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Numerics;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 // ReSharper disable RedundantCast
 
@@ -113,6 +115,32 @@ namespace FractureCommonLib
 
             PixelValues[x, y] = z;
             Lighting[x, y] = light;
+        }
+
+        // see if there is a way to copy the arrays more efficiently
+        public void SetBlock(int[,] pixels, Vector3[,] lighting, int width, int fromHeight, int toHeight, int depth)
+        {
+            if (width != Width)
+                throw new ArgumentException("RawLightedImage SetBlock Width does not match");
+
+            if(depth != Depth) 
+                throw new ArgumentException("RawLightedImage SetBlock Depth does not match");
+
+            if(fromHeight < 0 || fromHeight > Height)
+                throw new ArgumentException("RawLightedImage SetBlock fromHeight does not match");
+
+            if(toHeight < 0 || toHeight > Height)
+                throw new ArgumentException("RawLightedImage SetBlock toHeight does not match");
+
+            int subHeight = toHeight - fromHeight + 1;
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 0; y < subHeight; y++)
+                {
+                    PixelValues[x, fromHeight + y] = pixels[x,y];
+                    Lighting[x, fromHeight+y] = lighting[x,y];
+                }
+            }
         }
 
         public Bitmap GetBitmap(IPalette palette, DisplayInfo displayInfo, float ambientPower)
