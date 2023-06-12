@@ -118,29 +118,27 @@ namespace FractureCommonLib
         }
 
         // see if there is a way to copy the arrays more efficiently
-        public void SetBlock(int[,] pixels, Vector3[,] lighting, int width, int fromHeight, int toHeight, int depth)
+        public void SetBlock(int[,] pixels, Vector3[,] lighting, int fromWidth, int toWidth, int height, int depth)
         {
-            if (width != Width)
+            if (height != Height)
                 throw new ArgumentException("RawLightedImage SetBlock Width does not match");
 
             if(depth != Depth) 
                 throw new ArgumentException("RawLightedImage SetBlock Depth does not match");
 
-            if(fromHeight < 0 || fromHeight > Height)
+            if(fromWidth < 0 || fromWidth > Width)
                 throw new ArgumentException("RawLightedImage SetBlock fromHeight does not match");
 
-            if(toHeight < 0 || toHeight > Height)
+            if(toWidth < 0 || toWidth > Width)
                 throw new ArgumentException("RawLightedImage SetBlock toHeight does not match");
 
-            int subHeight = toHeight - fromHeight + 1;
-            for (int x = 0; x < Width; x++)
-            {
-                for (int y = 0; y < subHeight; y++)
-                {
-                    PixelValues[x, fromHeight + y] = pixels[x,y];
-                    Lighting[x, fromHeight+y] = lighting[x,y];
-                }
-            }
+            int subWidth = toWidth - fromWidth + 1; 
+
+            int startValues = fromWidth * Height;
+            int numberOfValues = subWidth * Height;
+
+            Array.Copy(pixels, 0, PixelValues, startValues, numberOfValues);
+            Array.Copy(lighting, 0, Lighting, startValues, numberOfValues);
         }
 
         public Bitmap GetBitmap(IPalette palette, DisplayInfo displayInfo, float ambientPower)
