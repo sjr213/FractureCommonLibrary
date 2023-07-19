@@ -11,7 +11,7 @@ namespace FractureCommonLib
 
         private Color _pointColor = Color.White;
 
-        private double _position = 0.0;
+        private double _position;
 
 
         // constructors
