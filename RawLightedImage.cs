@@ -1,9 +1,7 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Numerics;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 // ReSharper disable RedundantCast
 
