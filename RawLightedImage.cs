@@ -86,6 +86,12 @@ public class RawLightedImage : ICloneable
         ColorValues = new Color[Width, Height];
     }
 
+    [JsonConstructor]
+    public RawLightedImage() : this(1, 1)
+    {
+        ColorValues = new Color[1, 1];
+    }
+
     [JsonProperty]
     public int Width
     { get; set; }
