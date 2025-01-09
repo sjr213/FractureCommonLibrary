@@ -64,7 +64,7 @@ namespace FractureCommonLib
         // make sure all min are min and max are max
         void Validate()
         {
-            for (int index = (int)RgbType.part.blue; index < (int)RgbType.part.total; ++index)
+            for (int index = (int)RgbType.RgbPart.blue; index < (int)RgbType.RgbPart.total; ++index)
             {
                 if (MinRgb[index] > MaxRgb[index])
                 {

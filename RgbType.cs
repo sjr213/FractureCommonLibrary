@@ -3,6 +3,6 @@
     [Serializable]
     public class RgbType
     {
-        public enum part { blue = 0, green, red, total };
+        public enum RgbPart { blue = 0, green, red, total };
     }
 }

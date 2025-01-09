@@ -4,43 +4,43 @@ namespace FractureCommonLib
 {
     public static class HslConvertor
     {
-        private static RgbType.part GetMaxComponent(Color rgb, byte min, byte max)
+        private static RgbType.RgbPart GetMaxComponent(Color rgb, byte min, byte max)
         {
             if (max == min)
-                return RgbType.part.total;
+                return RgbType.RgbPart.total;
 
             if (rgb.R == max)
-                return RgbType.part.red;
+                return RgbType.RgbPart.red;
 
             if(rgb.G == max)
-                return RgbType.part.green;
+                return RgbType.RgbPart.green;
 
             if (rgb.B == max)
-                return RgbType.part.blue;
+                return RgbType.RgbPart.blue;
 
-            return RgbType.part.blue;
+            return RgbType.RgbPart.blue;
         }
 
-        private static double GetHue(Color rgb, byte min, byte max, RgbType.part maxComponent)
+        private static double GetHue(Color rgb, byte min, byte max, RgbType.RgbPart maxComponent)
         {
-            if (maxComponent == RgbType.part.total)
+            if (maxComponent == RgbType.RgbPart.total)
                 return 0.0;
 
             double C = max - min;
 
-            if (maxComponent == RgbType.part.red)
+            if (maxComponent == RgbType.RgbPart.red)
             {
                 double h = (rgb.G - rgb.B) / C % 6;
                 return 60.0 * h;
             }
 
-            if (maxComponent == RgbType.part.green)
+            if (maxComponent == RgbType.RgbPart.green)
             {
                 double h = (rgb.B - rgb.R) / C + 2.0;
                 return 60.0 * h;
             }
 
-            if (maxComponent == RgbType.part.blue)
+            if (maxComponent == RgbType.RgbPart.blue)
             {
                 double h = (rgb.R - rgb.G) / C + 4.0;
                 return 60.0 * h;
@@ -78,7 +78,7 @@ namespace FractureCommonLib
             byte max = Math.Max(Math.Max(rgb.R, rgb.G), rgb.B);
             byte min = Math.Min(Math.Min(rgb.R, rgb.G), rgb.B);
 
-            RgbType.part maxComponent = GetMaxComponent(rgb, min, max);
+            RgbType.RgbPart maxComponent = GetMaxComponent(rgb, min, max);
 
             hsl.H = GetHue(rgb, min, max, maxComponent);
             hsl.L = GetLightness(max, min);
