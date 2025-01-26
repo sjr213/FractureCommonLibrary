@@ -58,6 +58,8 @@ public class RawLightedImage : ICloneable
         Lighting = new Vector3[Width, Height];
 
         SetAllLighting(new Vector3());
+
+        LightingOnZeroIndex = true;
     }
 
     public RawLightedImage(int width, int height)
@@ -84,6 +86,8 @@ public class RawLightedImage : ICloneable
         Lighting = new Vector3[1, 1];
 
         ColorValues = new Color[Width, Height];
+
+        LightingOnZeroIndex = true;
     }
 
     [JsonConstructor]
@@ -119,6 +123,11 @@ public class RawLightedImage : ICloneable
 
     [JsonProperty]
     protected Color[,] ColorValues
+    { get; set; }
+
+    [JsonProperty]
+    [DefaultValue(true)]
+    public bool LightingOnZeroIndex
     { get; set; }
 
     public object Clone()
@@ -399,7 +408,8 @@ public class RawLightedImage : ICloneable
                 for (int y = 0; y < Height; ++y)
                 {
                     int pos = bmpData.Stride * y + x * 4;
-                    Color pixelColor = palette.GetColor(PixelValues[x, y]);
+                    var pixValue = PixelValues[x, y];
+                    Color pixelColor = palette.GetColor(pixValue);
                     byte* pixel = (byte*)intptr;
 
                     b = ((double)pixelColor.B - (double)displayInfo.MinRgb[0]) * stretch[0] + 0.49999;
@@ -409,7 +419,7 @@ public class RawLightedImage : ICloneable
                     Color palColor = Color.FromArgb(pixelColor.A, (byte)Math.Min(Math.Max(0, (int)(r)), Range),
                         (byte)Math.Min(Math.Max(0, (int)(g)), Range), (byte)Math.Min(Math.Max(0, (int)(b)), Range));
 
-                    var finalColor = LightingUtil.CalculateLight(palColor, Lighting[x, y], ambientPower);
+                    var finalColor = (LightingOnZeroIndex == true || pixValue > 0) ? LightingUtil.CalculateLight(palColor, Lighting[x,y], ambientPower) : palColor;
 
                     pixel[pos] = finalColor.B;
                     pixel[pos + 1] = finalColor.G;
@@ -655,7 +665,8 @@ public class RawLightedImage : ICloneable
                 for (int y = 0; y < Height; ++y)
                 {
                     int pos = bmpData.Stride * y + x * 4;
-                    Color pixelColor = palette.GetColor(PixelValues[x, y]);
+                    var pixValue = PixelValues[x, y];
+                    Color pixelColor = palette.GetColor(pixValue);
                     byte* pixel = (byte*)intptr;
 
                     HSL hsl = HslConvertor.ToHsl(pixelColor);
@@ -672,7 +683,7 @@ public class RawLightedImage : ICloneable
                     Color newColor = HslConvertor.ToRgb(hsl, pixelColor.A);
 
                     var lite = Lighting[x, y];
-                    Color finalColor = LightingUtil.CalculateLight(newColor, lite, ambientPower);
+                    Color finalColor = (LightingOnZeroIndex == true || pixValue > 0) ? LightingUtil.CalculateLight(newColor, lite, ambientPower) : newColor;
 
                     pixel[pos] = finalColor.B;
                     pixel[pos + 1] = finalColor.G;
@@ -809,7 +820,8 @@ public class RawLightedImage : ICloneable
                 for (int y = 0; y < Height; ++y)
                 {
                     int pos = bmpData.Stride * y + x * 4;
-                    Color pixelColor = palette.GetColor(PixelValues[x, y]);
+                    var pixValue = PixelValues[x, y];
+                    Color pixelColor = palette.GetColor(pixValue);
                     byte* pixel = (byte*)intptr;
 
                     HSL hsl = HslConvertor.ToHsl(pixelColor);
@@ -822,7 +834,7 @@ public class RawLightedImage : ICloneable
 
                     Color newColor = HslConvertor.ToRgb(hsl, pixelColor.A);
                     var lite = Lighting[x, y];
-                    Color finalColor = LightingUtil.CalculateLight(newColor, lite, ambientPower);
+                    Color finalColor = (LightingOnZeroIndex == true || pixValue > 0) ? LightingUtil.CalculateLight(newColor, lite, ambientPower) : newColor;
 
                     pixel[pos] = finalColor.B;
                     pixel[pos + 1] = finalColor.G;
@@ -951,7 +963,8 @@ public class RawLightedImage : ICloneable
                 for (int y = 0; y < Height; ++y)
                 {
                     int pos = bmpData.Stride * y + x * 4;
-                    Color pixelColor = palette.GetColor(PixelValues[x, y]);
+                    var pixValue = PixelValues[x, y];
+                    Color pixelColor = palette.GetColor(pixValue);
                     byte* pixel = (byte*)intptr;
 
                     HSL hsl = HslConvertor.ToHsl(pixelColor);
@@ -964,7 +977,7 @@ public class RawLightedImage : ICloneable
 
                     Color newColor = HslConvertor.ToRgb(hsl, pixelColor.A);
                     var lite = Lighting[x, y];
-                    Color finalColor = LightingUtil.CalculateLight(newColor, lite, ambientPower);
+                    Color finalColor = (LightingOnZeroIndex == true || pixValue > 0) ? LightingUtil.CalculateLight(newColor, lite, ambientPower) : newColor;
 
                     pixel[pos] = finalColor.B;
                     pixel[pos + 1] = finalColor.G;
@@ -1088,7 +1101,8 @@ public class RawLightedImage : ICloneable
                 for (int y = 0; y < Height; ++y)
                 {
                     int pos = bmpData.Stride * y + x * 4;
-                    Color pixelColor = palette.GetColor(PixelValues[x, y]);
+                    var pixValue = PixelValues[x, y];
+                    Color pixelColor = palette.GetColor(pixValue);
                     byte* pixel = (byte*)intptr;
 
                     HSL hsl = HslConvertor.ToHsl(pixelColor);
@@ -1098,7 +1112,7 @@ public class RawLightedImage : ICloneable
 
                     Color newColor = HslConvertor.ToRgb(hsl, pixelColor.A);
                     var lite = Lighting[x, y];
-                    Color finalColor = LightingUtil.CalculateLight(newColor, lite, ambientPower);
+                    Color finalColor = (LightingOnZeroIndex == true || pixValue > 0) ? LightingUtil.CalculateLight(newColor, lite, ambientPower) : newColor;
 
                     pixel[pos] = finalColor.B;
                     pixel[pos + 1] = finalColor.G;
@@ -1219,7 +1233,8 @@ public class RawLightedImage : ICloneable
                 for (int y = 0; y < Height; ++y)
                 {
                     int pos = bmpData.Stride * y + x * 4;
-                    Color pixelColor = palette.GetColor(PixelValues[x, y]);
+                    var pixValue = PixelValues[x, y];
+                    Color pixelColor = palette.GetColor(pixValue);
                     byte* pixel = (byte*)intptr;
 
                     HSL hsl = HslConvertor.ToHsl(pixelColor);
@@ -1232,7 +1247,7 @@ public class RawLightedImage : ICloneable
 
                     Color newColor = HslConvertor.ToRgb(hsl, pixelColor.A);
                     var lite = Lighting[x, y];
-                    Color finalColor = LightingUtil.CalculateLight(newColor, lite, ambientPower);
+                    Color finalColor = (LightingOnZeroIndex == true || pixValue > 0) ? LightingUtil.CalculateLight(newColor, lite, ambientPower) : newColor;
 
                     pixel[pos] = finalColor.B;
                     pixel[pos + 1] = finalColor.G;
@@ -1356,7 +1371,8 @@ public class RawLightedImage : ICloneable
                 for (int y = 0; y < Height; ++y)
                 {
                     int pos = bmpData.Stride * y + x * 4;
-                    Color pixelColor = palette.GetColor(PixelValues[x, y]);
+                    var pixValue = PixelValues[x, y];
+                    Color pixelColor = palette.GetColor(pixValue);
                     byte* pixel = (byte*)intptr;
 
                     HSL hsl = HslConvertor.ToHsl(pixelColor);
@@ -1366,7 +1382,7 @@ public class RawLightedImage : ICloneable
 
                     Color newColor = HslConvertor.ToRgb(hsl, pixelColor.A);
                     var lite = Lighting[x, y];
-                    Color finalColor = LightingUtil.CalculateLight(newColor, lite, ambientPower);
+                    Color finalColor = (LightingOnZeroIndex == true || pixValue > 0) ? LightingUtil.CalculateLight(newColor, lite, ambientPower) : newColor;
 
                     pixel[pos] = finalColor.B;
                     pixel[pos + 1] = finalColor.G;
@@ -1482,7 +1498,8 @@ public class RawLightedImage : ICloneable
                 for (int y = 0; y < Height; ++y)
                 {
                     int pos = bmpData.Stride * y + x * 4;
-                    Color pixelColor = palette.GetColor(PixelValues[x, y]);
+                    var pixValue = PixelValues[x, y];
+                    Color pixelColor = palette.GetColor(pixValue);
                     byte* pixel = (byte*)intptr;
 
                     HSL hsl = HslConvertor.ToHsl(pixelColor);
@@ -1492,7 +1509,7 @@ public class RawLightedImage : ICloneable
 
                     Color newColor = HslConvertor.ToRgb(hsl, pixelColor.A);
                     var lite = Lighting[x, y];
-                    Color finalColor = LightingUtil.CalculateLight(newColor, lite, ambientPower);
+                    Color finalColor = (LightingOnZeroIndex == true || pixValue > 0) ? LightingUtil.CalculateLight(newColor, lite, ambientPower) : newColor;
 
                     pixel[pos] = finalColor.B;
                     pixel[pos + 1] = finalColor.G;
@@ -1595,9 +1612,10 @@ public class RawLightedImage : ICloneable
                 for (int y = 0; y < Height; ++y)
                 {
                     int pos = bmpData.Stride * y + x * 4;
-                    Color palColor = palette.GetColor(PixelValues[x, y]);
+                    var pixValue = PixelValues[x, y];
+                    Color palColor = palette.GetColor(pixValue);
                     var lite = Lighting[x, y];
-                    Color pixelColor = LightingUtil.CalculateLight(palColor, lite, ambientPower);
+                    Color pixelColor = (LightingOnZeroIndex == true || pixValue > 0) ? LightingUtil.CalculateLight(palColor, lite, ambientPower) : palColor;
 
                     byte* pixel = (byte*)intptr;
 
