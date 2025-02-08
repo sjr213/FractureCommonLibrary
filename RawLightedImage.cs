@@ -126,7 +126,6 @@ public class RawLightedImage : ICloneable
     { get; set; }
 
     [JsonProperty]
-    [DefaultValue(true)]
     public bool LightingOnZeroIndex
     { get; set; }
 
@@ -135,6 +134,7 @@ public class RawLightedImage : ICloneable
         if (Mode == ImageMode.Depth)
         {
             var ri = new RawLightedImage(Width, Height, Depth);
+            ri.LightingOnZeroIndex = LightingOnZeroIndex;
 
             for (int x = 0; x < Width; ++x)
             {
@@ -151,6 +151,7 @@ public class RawLightedImage : ICloneable
         else // if(Mode == ImageMode.Color)
         {
             var ri = new RawLightedImage(Width, Height);
+            ri.LightingOnZeroIndex = LightingOnZeroIndex;
 
             for (int x = 0; x < Width; ++x)
             {
